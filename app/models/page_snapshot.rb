@@ -12,11 +12,11 @@ class PageSnapshot < ApplicationRecord
   end
 
   def match_text
-    @match = document.css(self.page.css_selector)
+    @match = document.css(self.page.css_selector.strip)
 
     if self.page.exclude_selector.present?
       # Set the content of the exclude selector to the empty string
-      @match.css(self.page.exclude_selector).each do |node|
+      @match.css(self.page.exclude_selector.strip).each do |node|
         node.content = ""
       end
     end
@@ -44,4 +44,7 @@ class PageSnapshot < ApplicationRecord
     self.match_text.blank?
   end
 
+  def filename
+    filename = self.page.name.gsub(" ","-") + "-" + self.created_at.to_s.gsub(" ","-") + ".html"
+  end
 end
